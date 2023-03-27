@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Contact {
+  id           Int      @id @default(autoincrement())
+  name         String?
+  email        String?
+  message      String   @db.Text
+  ipAddress    String?  @db.VarChar(45) @map(name: "ip_address")
+  userAgent    String?  @db.Text @map(name: "user_agent")
+  createdAt    DateTime @default(now()) @map(name: "created_at")
+  updatedAt    DateTime @updatedAt @map(name: "updated_at")
+
+  @@map(name: "contacts")
+}
+
+model JobApplication {
+  id           Int       @id @default(autoincrement())
+  jobPostingId Int       @map(name: "job_posting_id")
+  name         String
+  email        String
+  telephone    String?
+  address      String?
+  birthday     DateTime?
+  gender       String?
+  summary      String?   @db.Text
+  education    String?   @db.Text
+  workHistory  String?   @db.Text @map(name: "work_history")
+  certificates String?   @db.Text
+  ipAddress    String?   @db.VarChar(45) @map(name: "ip_address")
+  userAgent    String?   @db.Text @map(name: "user_agent")
+  createdAt    DateTime  @default(now()) @map(name: "created_at")
+  updatedAt    DateTime  @updatedAt @map(name: "updated_at")
+
+  jobPosting JobPosting @relation(fields: [jobPostingId], references: [id])
+
+  @@unique([jobPostingId, email], name: "job_applications_job_posting_id_email_unique")
+  @@map(name: "job_applications")
+}
+
+model JobPosting {
+  id                 Int      @id @default(autoincrement())
+  title              String
+  description        String   @db.Text
+  closedAt           DateTime @db.Date @map(name: "closed_at")
+  employmentType     String   @default("FULL_TIME") @map(name: "employment_type")
+  address            String?
+  locality           String?
+  region             String?
+  postalCode         String?  @map(name: "postal_code")
+  isRemote           Boolean  @default(false) @map(name: "is_remote")
+  salaryMin          String   @map(name: "salary_min")
+  salaryMax          String?  @map(name: "salary_max")
+  salaryUnit         String   @default("MONTH") @map(name: "salary_unit")
+  companyName        String   @map(name: "company_name")
+  companyDescription String   @db.Text @map(name: "company_description")
+  name               String
+  email              String
+  password           String
+  ipAddress          String?  @db.VarChar(45) @map(name: "ip_address")
+  userAgent          String?  @db.Text @map(name: "user_agent")
+  createdAt          DateTime @default(now()) @map(name: "created_at")
+  updatedAt          DateTime @updatedAt @map(name: "updated_at")
+  deletedAt          DateTime? @map(name: "deleted_at")
+  jobApplications    JobApplication[]
+
+  @@unique([title, companyName], name: "job_postings_title_company_name_unique")
+  @@map(name: "job_postings")
+}
