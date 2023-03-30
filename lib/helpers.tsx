@@ -8,3 +8,8 @@ export const __ = (key: string, replace?: Record<string, unknown>): string => {
   }
   return translatedText;
 }
+
+export const nl2br = (str: string): (string | JSX.Element)[] => {
+  const regex = /(\r\n|\r|\n)/g;
+  return str.split(regex).map((line, index) => (line.match(regex) ? <br key={index} /> : line));
+}
