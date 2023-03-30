@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { __ } from '@/lib/helpers';
 
 const Footer = () => {
   return (
@@ -8,32 +9,32 @@ const Footer = () => {
           <Link
           href="/"
           className="text-sm text-center text-white">
-            Home
+            {__('Home')}
           </Link>
         </div>
         <div>
           <Link
             href="/jobs"
             className="text-sm text-center text-white">
-            Find Jobs
+            {__('Find Jobs')}
           </Link>
         </div>
         <div>
           <Link
             href="/jobs/new"
             className="text-sm text-center text-white">
-            Post a Job
+            {__('Post a Job')}
           </Link>
         </div>
         <div>
           <Link
             href="/contact"
             className="text-sm text-center text-white">
-            Contact Us
+            {__('Contact Us')}
           </Link>
         </div>
       </div>
-      <p className="py-3 text-xs text-white text-center border-t border-slate-500">© Simple Job Board</p>
+      <p className="py-3 text-xs text-white text-center border-t border-slate-500">© {process.env.NEXT_PUBLIC_APP_NAME}</p>
     </footer>
   );
 }
