@@ -4,6 +4,7 @@ import { PrismaClient } from '@prisma/client';
 import Layout from '@/components/Layout';
 import { Map, Money } from '@/components/Icons';
 import JobPosting from '@/models/JobPosting';
+import { __ } from '@/lib/helpers';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const prisma = new PrismaClient();
@@ -21,11 +22,11 @@ export const getServerSideProps: GetServerSideProps = async () => {
   const jobPostings = JSON.parse(JSON.stringify(params.map(param => new JobPosting(param))));
 
   return {
-    props: { params, jobPostings },
+    props: { jobPostings },
   };
 };
 
-const Home = ({ params, jobPostings }: { params:any; jobPostings: any }) => {
+const Home = ({ jobPostings }: { jobPostings: JobPosting[] }) => {
   return (
     <Layout>
       {
@@ -60,11 +61,11 @@ const Home = ({ params, jobPostings }: { params:any; jobPostings: any }) => {
               ))}
             </div>
             <div className="my-10 text-center">
-              <Link href="/jobs" className="py-4 px-6 rounded-md bg-sky-500 text-white text-lg font-semibold transition-colors hover:bg-sky-600">View All Jobs</Link>
+              <Link href="/jobs" className="py-4 px-6 rounded-md bg-sky-500 text-white text-lg font-semibold transition-colors hover:bg-sky-600">{__('View All Jobs')}</Link>
             </div>
           </>
         ) : (
-          <p>Jobs not found.</p>
+          <p>{__('Jobs not found.')}</p>
         )
       }
     </Layout>

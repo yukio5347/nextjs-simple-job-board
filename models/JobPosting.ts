@@ -1,3 +1,5 @@
+import { __ } from '@/lib/helpers';
+
 class JobPosting {
   id: number;
   title: string;
@@ -58,9 +60,9 @@ class JobPosting {
     this.companyDescription = param.companyDescription;
     this.createdAt = param.createdAt.toISOString();
 
-    this.employmentTypeText = param.employmentType;
+    this.employmentTypeText = __(this.employmentType);
     this.employmentTypeColor = this.getEmploymentTypeColor();
-    this.salaryUnitText = param.salaryUnit;
+    this.salaryUnitText = __(this.salaryUnit);
     this.shortWorkPlace = this.getShortWorkPlace();
     this.workPlace = this.getWorkPlace();
     this.shortSalary = this.getShortSalary();
@@ -95,7 +97,7 @@ class JobPosting {
 
     let workPlace = address.join(', ');
     if (this.isRemote) {
-      workPlace = workPlace ? 'Remote' + ` / ${workPlace}` : 'Remote';
+      workPlace = workPlace ? __('Remote') + ` / ${workPlace}` : __('Remote');
     }
 
     return workPlace;
@@ -118,21 +120,21 @@ class JobPosting {
 
     let workPlace = address.join(', ');
     if (this.isRemote) {
-      workPlace = workPlace ? 'Remote' + ` / ${workPlace}` : 'Remote';
+      workPlace = workPlace ? __('Remote') + ` / ${workPlace}` : __('Remote');
     }
 
     return workPlace;
   }
 
   private getShortSalary(): string {
-    return new Intl.NumberFormat(process.env.LOCALE, { style: 'currency', currency: process.env.CURRENCY }).format(this.salaryMin);
+    return new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, { style: 'currency', currency: process.env.NEXT_PUBLIC_CURRENCY }).format(this.salaryMin);
   }
 
   private getSalary(): string {
-    let salary = new Intl.NumberFormat(process.env.LOCALE, { style: 'currency', currency: process.env.CURRENCY }).format(this.salaryMin);
+    let salary = new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, { style: 'currency', currency: process.env.NEXT_PUBLIC_CURRENCY }).format(this.salaryMin);
 
     if (this.salaryMax) {
-      salary += ' ~ ' + new Intl.NumberFormat(process.env.LOCALE, { style: 'currency', currency: process.env.CURRENCY }).format(this.salaryMax);
+      salary += ' ~ ' + new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, { style: 'currency', currency: process.env.NEXT_PUBLIC_CURRENCY }).format(this.salaryMax);
     }
 
     return salary;
