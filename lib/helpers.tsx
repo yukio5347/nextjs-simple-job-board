@@ -13,3 +13,7 @@ export const nl2br = (str: string): (string | JSX.Element)[] => {
   const regex = /(\r\n|\r|\n)/g;
   return str.split(regex).map((line, index) => (line.match(regex) ? <br key={index} /> : line));
 }
+
+export const dateToString = (date: Date): string => {
+  return date.toISOString().replace(/T.*/, '');
+}
