@@ -17,9 +17,45 @@ const Pagination = ({ currentPage, pageCount, handlePageChange }: { currentPage:
       } else {
         links.push({
           page: i,
-          url: `/jobs?page=${i}`,
         });
       }
+    }
+  } else {
+    if (currentPage > 1) {
+      links.push({
+        page: 1,
+      });
+    }
+    if (currentPage > 3) {
+      links.push({
+        key: 'dot1',
+        dot: true,
+      });
+    }
+    if (currentPage > 2) {
+      links.push({
+        page: currentPage - 1,
+      });
+    }
+    links.push({
+      page: currentPage,
+      active: true,
+    });
+    if (currentPage < (pageCount - 1)) {
+      links.push({
+        page: currentPage + 1,
+      });
+    }
+    if (currentPage < (pageCount - 2)) {
+      links.push({
+        key: 'dot2',
+        dot: true,
+      });
+    }
+    if (currentPage < pageCount) {
+      links.push({
+        page: pageCount,
+      });
     }
   }
 
@@ -27,27 +63,29 @@ const Pagination = ({ currentPage, pageCount, handlePageChange }: { currentPage:
     <div className="mb-4">
       <div className="flex flex-wrap mt-8">
         {currentPage > 1 && (
-          <Link href={`/jobs?page=${currentPage - 1}`} className={className}>
+          <button key="Previous" onClick={() => handlePageChange(currentPage - 1)} className={className}>
             {__('« Previous')}
-          </Link>
+          </button>
         )}
-        {links.map((link, index: number) =>
+        {links.map((link) =>
           link.active ? (
-            <span key={index} className={className + ' bg-sky-500 border-sky-500 text-white'}>
+            <span key={link.page} className={className + ' bg-sky-500 border-sky-500 text-white'}>
               {__(String(link.page))}
             </span>
+          ) : link.dot ? (
+            <span key={link.key} className='mr-2 mb-2 px-1 py-3'>...</span>
           ) : (
-            link.url && (
-              <button key={index} onClick={() => handlePageChange(link.page)} className={className}>
+            link.page && (
+              <button key={link.page} onClick={() => handlePageChange(link.page)} className={className}>
                 {__(String(link.page))}
               </button>
             )
           )
         )}
         {currentPage < pageCount && (
-          <Link href={`/jobs?page=${currentPage + 1}`} className={className}>
+          <button key="Next" onClick={() => handlePageChange(currentPage + 1)} className={className}>
             {__('Next »')}
-          </Link>
+          </button>
         )}
       </div>
     </div>

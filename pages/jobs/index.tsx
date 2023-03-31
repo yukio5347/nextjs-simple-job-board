@@ -81,17 +81,17 @@ const Index = () => {
                       <span className={currentJob?.employmentTypeColor + ' rounded font-medium py-1 px-2'}>
                         {currentJob?.employmentTypeText}
                       </span>
-                      <div>{currentJob?.createdAt.replace(/T.*/, '')}</div>
+                      <div>{currentJob?.createdAt}</div>
                     </div>
                   </div>
                 </div>
                 <div className="py-5 border-b md:p-7 xl:p-10">
                   <h4 className="font-semibold mb-2 text-lg md:mb-4">{__('Job Description')}</h4>
-                  <p>{currentJob && nl2br(currentJob.description)}</p>
+                  <p>{currentJob?.description && nl2br(currentJob.description)}</p>
                 </div>
                 <div className="py-5 border-b md:p-7 xl:p-10">
                   <h4 className="font-semibold mb-2 text-lg md:mb-4">{__('Company Description')}</h4>
-                  <p>{currentJob && nl2br(currentJob.companyDescription)}</p>
+                  <p>{currentJob?.companyDescription && nl2br(currentJob.companyDescription)}</p>
                 </div>
                 <div className="pt-3 md:p-7 md:py-4 xl:p-10 text-right">
                   <Link href={`/jobs/${currentJob?.id}/edit`} className="mr-5 text-sm text-sky-600" rel="nofollow">

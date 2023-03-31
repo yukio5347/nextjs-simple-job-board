@@ -40,7 +40,7 @@ const JobPostingItem = ({
         >
           {jobPosting.employmentTypeText}
         </span>
-        <div>{jobPosting.createdAt.replace(/T.*/, "")}</div>
+        <div>{jobPosting.createdAt}</div>
       </div>
     </Link>
   );
