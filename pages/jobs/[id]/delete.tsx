@@ -63,6 +63,7 @@ const Delete = ({ id, jobPosting }: { id: number; jobPosting?: JobPosting }) => 
                 value={email}
                 className="mt-1 block w-full"
                 autoComplete="email"
+                isFocused={true}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 maxLength="255"
                 required

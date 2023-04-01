@@ -31,16 +31,16 @@ export const getServerSideProps: GetServerSideProps = async ({ params }: { [id: 
 }
 
 const Delete = ({ id, jobPosting }: { id: number; jobPosting?: JobPosting }) => {
-  const [name, setName] = useState('this is name');
-  const [email, setEmail] = useState('hoge@hoge.hoge');
-  const [telephone, setTelephone] = useState('this is telephone');
-  const [address, setAddress] = useState('this is address');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [telephone, setTelephone] = useState('');
+  const [address, setAddress] = useState('');
   const [birthday, setBirthday] = useState('');
-  const [gender, setGender] = useState('this is gender');
-  const [summary, setSummary] = useState('this is summary');
-  const [education, setEducation] = useState('this is education');
-  const [workHistory, setWorkHistory] = useState('this is workHistory');
-  const [certificates, setCertificates] = useState('this is certificates');
+  const [gender, setGender] = useState('');
+  const [summary, setSummary] = useState('');
+  const [education, setEducation] = useState('');
+  const [workHistory, setWorkHistory] = useState('');
+  const [certificates, setCertificates] = useState('');
   const [processing, setProcessing] = useState(false);
   const router = useRouter();
   const genders = {
@@ -78,7 +78,7 @@ const Delete = ({ id, jobPosting }: { id: number; jobPosting?: JobPosting }) => 
     <Layout>
       {jobPosting ? (
         <>
-          <h1 className="mb-4 font-semibold">You are applying to "{jobPosting.title}"</h1>
+          <h1 className="mb-4 font-semibold">You are applying to &quot;{jobPosting.title}&quot;</h1>
           <form onSubmit={handleSubmit}>
             <div className="mt-4">
               <InputLabel htmlFor="name" value={__('Your Name')} isRequired={true} />
@@ -88,6 +88,7 @@ const Delete = ({ id, jobPosting }: { id: number; jobPosting?: JobPosting }) => 
                 value={name}
                 className="mt-1 block w-full"
                 autoComplete="name"
+                isFocused={true}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
                 maxLength="255"
                 required
