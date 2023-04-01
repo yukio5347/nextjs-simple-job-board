@@ -10,8 +10,12 @@ const prisma = new PrismaClient();
 
 export const getServerSideProps: GetServerSideProps = async ({ params }: { [key: string]: any; }) => {
   const id = parseInt(params.id as string);
-  const param = await prisma.jobPosting.findUnique({
-    where: { id: id },
+  const param = await prisma.jobPosting.findFirst({
+    where: {
+      id: id,
+      closedAt: { gte: new Date() },
+      deletedAt: null,
+    },
   });
 
   const jobPosting = param ? JSON.parse(JSON.stringify(new JobPosting(param))) : null;

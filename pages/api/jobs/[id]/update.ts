@@ -4,7 +4,6 @@ import { PrismaClient } from '@prisma/client';
 import { DataProps } from '@/components/Form';
 
 const prisma = new PrismaClient();
-import {createHash} from 'crypto';
 
 const handler: NextApiHandler = async (req, res) => {
   const id = parseInt(req.query.id as string);
@@ -27,8 +26,12 @@ const handler: NextApiHandler = async (req, res) => {
     password,
   }: DataProps = req.body;
 
-  const jobPosting = await prisma.jobPosting.findUnique({
-    where: { id: id },
+  const jobPosting = await prisma.jobPosting.findFirst({
+    where: {
+      id: id,
+      closedAt: { gte: new Date() },
+      deletedAt: null,
+    },
   });
 
   if (jobPosting && jobPosting.email === email && jobPosting.password === password) {
