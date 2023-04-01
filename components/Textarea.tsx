@@ -1,22 +1,19 @@
-import { forwardRef, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const Textarea = (
   {
     className = "",
     isFocused = false,
     ...props
-  }: { className?: string; isFocused?: boolean; [key: string]: any; },
-  ref: {
-    current: any;
-  }
+  }: { className?: string; isFocused?: boolean; [key: string]: any; }
 ) => {
-  const textarea = ref ? ref : useRef();
+  const textarea = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (isFocused) {
-      textarea.current.focus();
+      textarea?.current?.focus();
     }
-  }, []);
+  }, [isFocused]);
 
   return (
     <div className="flex flex-col items-start">
@@ -29,4 +26,4 @@ const Textarea = (
   );
 };
 
-export default forwardRef(Textarea);
+export default Textarea;

@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 const TextInput = (
   {
@@ -11,18 +11,15 @@ const TextInput = (
     className?: string;
     isFocused?: boolean;
     [key: string]: any;
-  },
-  ref: {
-    current: any;
   }
 ) => {
-  const input = ref ? ref : useRef();
+  const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (isFocused) {
-      input.current.focus();
+      input?.current?.focus();
     }
-  }, []);
+  }, [isFocused]);
 
   return (
     <div className="flex flex-col items-start">
@@ -36,4 +33,4 @@ const TextInput = (
   );
 };
 
-export default forwardRef(TextInput);
+export default TextInput;
