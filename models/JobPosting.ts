@@ -1,64 +1,69 @@
 import { __ } from '@/lib/helpers';
 
+const numberFormatOption = {
+  style: 'currency',
+  currency: process.env.NEXT_PUBLIC_CURRENCY
+};
+
 class JobPosting {
-  id: number;
-  title: string;
-  description: string;
+  id?: number;
+  title?: string;
+  description?: string;
   closedAt: string;
   employmentType: string; // 'FULL_TIME' | 'PART_TIME' | 'CONTRACTOR' | 'TEMPORARY' | 'INTERN';
-  address: string | null;
-  locality: string | null;
-  region: string | null;
-  postalCode: string | null;
-  isRemote: Boolean;
-  salaryMin: number;
-  salaryMax: number | null;
+  address?: string | null;
+  locality?: string | null;
+  region?: string | null;
+  postalCode?: string | null;
+  isRemote: boolean;
+  salaryMin: string;
+  salaryMax?: string | null;
   salaryUnit: string; //'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
-  companyName: string;
-  companyDescription: string;
-  createdAt: string;
-  employmentTypeText: string;
-  employmentTypeColor: string;
-  salaryUnitText: string;
-  shortWorkPlace: string;
-  workPlace: string;
-  shortSalary: string;
-  salary: string;
+  companyName?: string;
+  companyDescription?: string;
+  createdAt?: string;
+  employmentTypeText?: string;
+  employmentTypeColor?: string;
+  salaryUnitText?: string;
+  shortWorkPlace?: string;
+  workPlace?: string;
+  shortSalary?: string;
+  salary?: string;
 
   constructor(param: {
-    id: number;
-    title: string;
-    description: string;
+    id?: number;
+    title?: string;
+    description?: string;
     closedAt: Date;
     employmentType: string; // 'FULL_TIME' | 'PART_TIME' | 'CONTRACTOR' | 'TEMPORARY' | 'INTERN';
-    address: string | null;
-    locality: string | null;
-    region: string | null;
-    postalCode: string | null;
-    isRemote: Boolean;
+    address?: string | null;
+    locality?: string | null;
+    region?: string | null;
+    postalCode?: string | null;
+    isRemote: boolean;
     salaryMin: string;
     salaryMax?: string | null;
     salaryUnit: string; //'HOUR' | 'DAY' | 'WEEK' | 'MONTH' | 'YEAR';
-    companyName: string;
-    companyDescription: string;
-    createdAt: Date;
+    companyName?: string;
+    companyDescription?: string;
+    createdAt?: Date;
   }) {
     this.id = param.id;
     this.title = param.title;
     this.description = param.description;
-    this.closedAt = param.closedAt.toISOString();
+    this.closedAt = param.closedAt.toISOString().replace(/T.*/, '');
     this.employmentType = param.employmentType;
     this.address = param.address;
     this.locality = param.locality;
     this.region = param.region;
     this.postalCode = param.postalCode;
     this.isRemote = param.isRemote;
-    this.salaryMin = Number(param.salaryMin);
-    this.salaryMax = Number(param.salaryMax);
+    this.salaryMin = param.salaryMin;
+    this.salaryMax = param.salaryMax;
     this.salaryUnit = param.salaryUnit;
     this.companyName = param.companyName;
     this.companyDescription = param.companyDescription;
-    this.createdAt = param.createdAt.toISOString();
+    this.createdAt = param.createdAt?.toISOString().replace(/T.*/, '');
 
     this.employmentTypeText = __(this.employmentType);
     this.employmentTypeColor = this.getEmploymentTypeColor();
@@ -127,14 +132,14 @@ class JobPosting {
   }
 
   private getShortSalary(): string {
-    return new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, { style: 'currency', currency: process.env.NEXT_PUBLIC_CURRENCY }).format(this.salaryMin);
+    return new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, numberFormatOption).format(Number(this.salaryMin));
   }
 
   private getSalary(): string {
-    let salary = new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, { style: 'currency', currency: process.env.NEXT_PUBLIC_CURRENCY }).format(this.salaryMin);
+    let salary = new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, numberFormatOption).format(Number(this.salaryMin));
 
     if (this.salaryMax) {
-      salary += ' ~ ' + new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, { style: 'currency', currency: process.env.NEXT_PUBLIC_CURRENCY }).format(this.salaryMax);
+      salary += ' ~ ' + new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, numberFormatOption).format(Number(this.salaryMax));
     }
 
     return salary;
