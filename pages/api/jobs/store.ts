@@ -1,4 +1,5 @@
 import { NextApiHandler } from 'next';
+import bcrypt from 'bcrypt';
 import requestIp from 'request-ip';
 import { PrismaClient } from '@prisma/client';
 import { DataProps } from '@/components/Form';
@@ -44,7 +45,7 @@ const handler: NextApiHandler = async (req, res) => {
       companyDescription,
       name,
       email,
-      password,
+      password: bcrypt.hashSync(password, 10),
       ipAddress: requestIp.getClientIp(req),
       userAgent: req.headers['user-agent'],
     },
