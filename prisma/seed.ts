@@ -26,7 +26,7 @@ async function main() {
         companyDescription: faker.lorem.paragraphs() + "\n\n" + faker.lorem.paragraphs(),
         name: faker.name.fullName(),
         email: faker.internet.email(),
-        password: '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
+        password: '$2b$10$3KAjHfOm/Q1G6vcjunDfSOF6XerN3Grq8Es3L3VtCKwZ4X4wmNy1e', // password
         ipAddress: faker.internet.ip(),
         userAgent: faker.internet.userAgent(),
       },
