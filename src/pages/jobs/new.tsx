@@ -24,13 +24,13 @@ const New = () => {
     if (res.ok) {
       router.push('/jobs');
     }
-  }
+  };
 
   return (
     <Layout>
       <Form jobPosting={jobPosting} onSubmit={handleSubmit} />
     </Layout>
   );
-}
+};
 
 export default New;

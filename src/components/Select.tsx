@@ -10,7 +10,7 @@ const Select = ({
   [key: string]: any;
 }) => {
   return (
-    <div className="flex flex-col items-start">
+    <div className='flex flex-col items-start'>
       <select
         {...props}
         value={value}

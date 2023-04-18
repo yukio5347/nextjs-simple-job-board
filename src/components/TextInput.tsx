@@ -1,18 +1,16 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-const TextInput = (
-  {
-    type = "text",
-    className = "",
-    isFocused = false,
-    ...props
-  }: {
-    type?: string;
-    className?: string;
-    isFocused?: boolean;
-    [key: string]: any;
-  }
-) => {
+const TextInput = ({
+  type = 'text',
+  className = '',
+  isFocused = false,
+  ...props
+}: {
+  type?: string;
+  className?: string;
+  isFocused?: boolean;
+  [key: string]: any;
+}) => {
   const input = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -22,7 +20,7 @@ const TextInput = (
   }, [isFocused]);
 
   return (
-    <div className="flex flex-col items-start">
+    <div className='flex flex-col items-start'>
       <input
         {...props}
         type={type}

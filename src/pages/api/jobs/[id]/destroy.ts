@@ -6,10 +6,7 @@ const prisma = new PrismaClient();
 
 const handler: NextApiHandler = async (req, res) => {
   const id = parseInt(req.query.id as string);
-  const {
-    email,
-    password,
-  } = req.body;
+  const { email, password } = req.body;
 
   if (await Authenticate(id, email, password)) {
     await prisma.jobPosting.update({
@@ -25,6 +22,6 @@ const handler: NextApiHandler = async (req, res) => {
   } else {
     res.status(401).json({ message: 'Failed to delete your job...' });
   }
-}
+};
 
 export default handler;

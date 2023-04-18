@@ -21,6 +21,6 @@ const handler: NextApiHandler = async (req, res) => {
 
   res.setHeader('x-total-count', totalCount.toString());
   res.status(200).json(jobPostings);
-}
+};
 
 export default handler;

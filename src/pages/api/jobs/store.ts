@@ -52,6 +52,6 @@ const handler: NextApiHandler = async (req, res) => {
   });
 
   res.status(201).json(jobPosting);
-}
+};
 
 export default handler;

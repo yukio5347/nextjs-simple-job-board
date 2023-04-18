@@ -2,7 +2,7 @@ import { __ } from '@/lib/helpers';
 
 const numberFormatOption = {
   style: 'currency',
-  currency: process.env.NEXT_PUBLIC_CURRENCY
+  currency: process.env.NEXT_PUBLIC_CURRENCY,
 };
 
 class JobPosting {
@@ -92,7 +92,7 @@ class JobPosting {
   }
 
   private getShortWorkPlace(): string {
-    let address = [];
+    const address = [];
     if (this.locality) {
       address.push(this.locality);
     }
@@ -109,7 +109,7 @@ class JobPosting {
   }
 
   private getWorkPlace(): string {
-    let address = [];
+    const address = [];
     if (this.address) {
       address.push(this.address);
     }
@@ -136,10 +136,14 @@ class JobPosting {
   }
 
   private getSalary(): string {
-    let salary = new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, numberFormatOption).format(Number(this.salaryMin));
+    let salary = new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, numberFormatOption).format(
+      Number(this.salaryMin),
+    );
 
     if (this.salaryMax) {
-      salary += ' ~ ' + new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, numberFormatOption).format(Number(this.salaryMax));
+      salary +=
+        ' ~ ' +
+        new Intl.NumberFormat(process.env.NEXT_PUBLIC_LOCALE, numberFormatOption).format(Number(this.salaryMax));
     }
 
     return salary;

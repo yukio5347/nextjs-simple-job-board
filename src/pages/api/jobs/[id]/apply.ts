@@ -62,9 +62,9 @@ const handler: NextApiHandler = async (req, res) => {
             birthday: birthday || null,
             gender: gender || null,
             summary,
-            education: education ||  null,
-            workHistory: workHistory ||  null,
-            certificates: certificates ||  null,
+            education: education || null,
+            workHistory: workHistory || null,
+            certificates: certificates || null,
             ipAddress: requestIp.getClientIp(req),
             userAgent: req.headers['user-agent'],
           },
@@ -76,6 +76,6 @@ const handler: NextApiHandler = async (req, res) => {
   } else {
     res.status(401).json(jobPosting);
   }
-}
+};
 
 export default handler;

@@ -1,9 +1,17 @@
 import Link from 'next/link';
 import { __ } from '@/lib/helpers';
 
-const Pagination = ({ currentPage, pageCount, handlePageChange }: { currentPage: number; pageCount: number; handlePageChange: (selectedPage: number) => void }): JSX.Element => {
+const Pagination = ({
+  currentPage,
+  pageCount,
+  handlePageChange,
+}: {
+  currentPage: number;
+  pageCount: number;
+  handlePageChange: (selectedPage: number) => void;
+}): JSX.Element => {
   const className = 'mr-2 mb-2 px-4 py-3 text-sm border rounded transition-colors hover:border-sky-500';
-  let links = [];
+  const links = [];
 
   if (pageCount <= 1) {
     return <></>;
@@ -41,12 +49,12 @@ const Pagination = ({ currentPage, pageCount, handlePageChange }: { currentPage:
       page: currentPage,
       active: true,
     });
-    if (currentPage < (pageCount - 1)) {
+    if (currentPage < pageCount - 1) {
       links.push({
         page: currentPage + 1,
       });
     }
-    if (currentPage < (pageCount - 2)) {
+    if (currentPage < pageCount - 2) {
       links.push({
         key: 'dot2',
         dot: true,
@@ -60,10 +68,10 @@ const Pagination = ({ currentPage, pageCount, handlePageChange }: { currentPage:
   }
 
   return (
-    <div className="mb-4">
-      <div className="flex flex-wrap mt-8">
+    <div className='mb-4'>
+      <div className='flex flex-wrap mt-8'>
         {currentPage > 1 && (
-          <button key="Previous" onClick={() => handlePageChange(currentPage - 1)} className={className}>
+          <button key='Previous' onClick={() => handlePageChange(currentPage - 1)} className={className}>
             {__('« Previous')}
           </button>
         )}
@@ -73,17 +81,19 @@ const Pagination = ({ currentPage, pageCount, handlePageChange }: { currentPage:
               {__(String(link.page))}
             </span>
           ) : link.dot ? (
-            <span key={link.key} className='mr-2 mb-2 px-1 py-3'>...</span>
+            <span key={link.key} className='mr-2 mb-2 px-1 py-3'>
+              ...
+            </span>
           ) : (
             link.page && (
               <button key={link.page} onClick={() => handlePageChange(link.page)} className={className}>
                 {__(String(link.page))}
               </button>
             )
-          )
+          ),
         )}
         {currentPage < pageCount && (
-          <button key="Next" onClick={() => handlePageChange(currentPage + 1)} className={className}>
+          <button key='Next' onClick={() => handlePageChange(currentPage + 1)} className={className}>
             {__('Next »')}
           </button>
         )}

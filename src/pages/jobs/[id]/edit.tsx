@@ -8,7 +8,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const getServerSideProps: GetServerSideProps = async ({ params }: { [key: string]: any; }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }: { [key: string]: any }) => {
   const id = parseInt(params.id as string);
   const param = await prisma.jobPosting.findFirst({
     where: {
@@ -21,9 +21,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }: { [key:
   const jobPosting = param ? JSON.parse(JSON.stringify(new JobPosting(param))) : null;
 
   return {
-    props: { jobPosting }
+    props: { jobPosting },
   };
-}
+};
 
 const Edit = ({ jobPosting }: { jobPosting?: JobPosting }) => {
   const router = useRouter();
@@ -38,17 +38,11 @@ const Edit = ({ jobPosting }: { jobPosting?: JobPosting }) => {
     if (res.ok) {
       router.push('/jobs');
     }
-  }
+  };
 
   return (
-    <Layout>
-      {jobPosting ? (
-        <Form jobPosting={jobPosting} onSubmit={handleSubmit} />
-      ) : (
-        <p>job not found.</p>
-      )}
-    </Layout>
+    <Layout>{jobPosting ? <Form jobPosting={jobPosting} onSubmit={handleSubmit} /> : <p>job not found.</p>}</Layout>
   );
-}
+};
 
 export default Edit;
