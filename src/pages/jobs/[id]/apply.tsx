@@ -1,17 +1,16 @@
-import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import JobPosting from '@/models/JobPosting';
-import Layout from '@/components/Layout';
-import InputLabel from '@/components/InputLabel';
-import TextInput from '@/components/TextInput';
-import Textarea from '@/components/Textarea';
-import Select from '@/components/Select';
-import Button from '@/components/Button';
-import { __, dateToString } from '@/lib/helpers';
-import { PrismaClient } from '@prisma/client';
+import { useState } from 'react';
 
-const prisma = new PrismaClient();
+import Button from '@/components/Button';
+import InputLabel from '@/components/InputLabel';
+import Layout from '@/components/Layout';
+import Select from '@/components/Select';
+import Textarea from '@/components/Textarea';
+import TextInput from '@/components/TextInput';
+import { __, dateToString } from '@/lib/helpers';
+import { prisma } from '@/lib/prisma';
+import JobPosting from '@/models/JobPosting';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }: { [id: string]: any }) => {
   const id = parseInt(params.id as string);

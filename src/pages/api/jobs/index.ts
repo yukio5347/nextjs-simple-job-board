@@ -1,9 +1,8 @@
 import { NextApiHandler } from 'next';
-import { PrismaClient } from '@prisma/client';
-import { where, orderBy } from '@/lib/queries';
-import JobPosting from '@/models/JobPosting';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import { orderBy, where } from '@/lib/queries';
+import JobPosting from '@/models/JobPosting';
 
 const handler: NextApiHandler = async (req, res) => {
   const { page = '1' } = req.query;

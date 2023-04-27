@@ -1,16 +1,16 @@
-import { useState } from 'react';
 import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { PrismaClient } from '@prisma/client';
-import Layout from '@/components/Layout';
+import { useState } from 'react';
+
 import JobPostingItem from '@/components/JobPostingItem';
+import Layout from '@/components/Layout';
 import Modal from '@/components/Modal';
-import JobPosting from '@/models/JobPosting';
-import { where, orderBy } from '@/lib/queries';
 import { __ } from '@/lib/helpers';
+import { prisma } from '@/lib/prisma';
+import { orderBy, where } from '@/lib/queries';
+import JobPosting from '@/models/JobPosting';
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const prisma = new PrismaClient();
   const params = await prisma.jobPosting.findMany({
     where,
     orderBy,

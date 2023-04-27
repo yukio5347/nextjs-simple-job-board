@@ -1,10 +1,9 @@
-import { NextApiHandler } from 'next';
 import bcrypt from 'bcrypt';
+import { NextApiHandler } from 'next';
 import requestIp from 'request-ip';
-import { PrismaClient } from '@prisma/client';
-import { DataProps } from '@/components/Form';
 
-const prisma = new PrismaClient();
+import { DataProps } from '@/components/Form';
+import { prisma } from '@/lib/prisma';
 
 const handler: NextApiHandler = async (req, res) => {
   const {

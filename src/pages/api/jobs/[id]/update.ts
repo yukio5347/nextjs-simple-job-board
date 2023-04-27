@@ -1,10 +1,9 @@
 import { NextApiHandler } from 'next';
 import requestIp from 'request-ip';
-import { PrismaClient } from '@prisma/client';
+
 import { DataProps } from '@/components/Form';
 import Authenticate from '@/lib/authenticate';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 const handler: NextApiHandler = async (req, res) => {
   const id = parseInt(req.query.id as string);

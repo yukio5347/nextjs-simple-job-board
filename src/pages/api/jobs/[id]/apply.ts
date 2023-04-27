@@ -1,8 +1,7 @@
 import { NextApiHandler } from 'next';
 import requestIp from 'request-ip';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 interface DataProps {
   name: string;

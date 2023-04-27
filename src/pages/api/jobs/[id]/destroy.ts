@@ -1,8 +1,7 @@
 import { NextApiHandler } from 'next';
-import { PrismaClient } from '@prisma/client';
-import Authenticate from '@/lib/authenticate';
 
-const prisma = new PrismaClient();
+import Authenticate from '@/lib/authenticate';
+import { prisma } from '@/lib/prisma';
 
 const handler: NextApiHandler = async (req, res) => {
   const id = parseInt(req.query.id as string);

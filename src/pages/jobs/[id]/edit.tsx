@@ -1,12 +1,11 @@
 import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import JobPosting from '@/models/JobPosting';
+
 import Form, { DataProps } from '@/components/Form';
 import Layout from '@/components/Layout';
 import { __ } from '@/lib/helpers';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
+import JobPosting from '@/models/JobPosting';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }: { [key: string]: any }) => {
   const id = parseInt(params.id as string);
