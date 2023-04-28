@@ -18,9 +18,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         skip: offset,
       });
       const jobPostings = data.map((jobPosting) => formatJobPosting(jobPosting));
-      const totalCount: number = await prisma.jobPosting.count({ where });
-
-      res.setHeader('x-total-count', totalCount.toString());
       res.status(200).json(jobPostings);
     } catch (error) {
       return res.status(500).json({

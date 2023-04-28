@@ -1,39 +1,23 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import Layout from '@/components/Layout';
-import Pagination from '@/components/Pagination';
-import Modal from '@/components/Modal';
-import JobPosting from '@/models/JobPosting';
-import { __ } from '@/lib/helpers';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+
 import JobPostingItem from '@/components/JobPostingItem';
+import Layout from '@/components/Layout';
+import Loading from '@/components/Loading';
+import Modal from '@/components/Modal';
+import Pagination from '@/components/Pagination';
+import { __ } from '@/lib/helpers';
+import { useJobList, usePageCount } from '@/lib/swr';
+import { JobPosting } from '@/models/JobPosting';
 
 const Index = () => {
-  const [jobPostings, setJobPostings] = useState<JobPosting[]>([]);
-  const [pageCount, setPageCount] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
   const [currentJob, setCurrentJob] = useState<JobPosting>();
   const [isOpen, setIsOpen] = useState(false);
-  const perPage = 20;
-  const title =
-    (process.env.NEXT_PUBLIC_JOBS_INDEX_TITLE || '') +
-    (currentPage > 1 ? ' - ' + __('page :page', { page: currentPage }) : '');
-
-  useEffect(() => {
-    const fetchJobs = async () => {
-      const res = await axios.get<JobPosting[]>(`/api/jobs?page=${currentPage}`, {
-        headers: { Accept: 'application/json' },
-      });
-      setJobPostings(res.data);
-      setPageCount(Math.ceil(parseInt(res.headers['x-total-count'], 10) / perPage));
-    };
-
-    fetchJobs();
-  }, [currentPage]);
-
-  const handlePageChange = (selectedPage: number) => {
-    setCurrentPage(selectedPage);
-    window.scrollTo({ top: 0 });
-  };
+  const router = useRouter();
+  const currentPage = Number(router.query.page) || 1;
+  const { jobPostings, error, isLoading } = useJobList(currentPage);
+  const { pageCount } = usePageCount();
+  const title = (process.env.NEXT_PUBLIC_JOBS_INDEX_TITLE || '') + ' - ' + __('page :page', { page: currentPage });
 
   const openModal = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, jobPosting: JobPosting): void => {
     e.preventDefault();
@@ -47,15 +31,19 @@ const Index = () => {
 
   return (
     <Layout>
-      <h1 className='mb-2 font-semibold'>{title}</h1>
-      {jobPostings ? (
+      <h1 className='mb-3 font-semibold'>{title}</h1>
+      {error ? (
+        <>{error.message}</>
+      ) : isLoading ? (
+        <Loading />
+      ) : jobPostings ? (
         <>
           <div className='grid gap-5 md:grid-cols-2'>
             {jobPostings.map((jobPosting: JobPosting) => (
               <JobPostingItem key={jobPosting.id} jobPosting={jobPosting} openModal={openModal} />
             ))}
           </div>
-          <Pagination currentPage={currentPage} pageCount={pageCount} handlePageChange={handlePageChange} />
+          <Pagination currentPage={currentPage} pageCount={pageCount} />
           <Modal jobPosting={currentJob} show={isOpen} onClose={closeModal} />
         </>
       ) : (

@@ -1,15 +1,8 @@
 import Link from 'next/link';
+
 import { __ } from '@/lib/helpers';
 
-const Pagination = ({
-  currentPage,
-  pageCount,
-  handlePageChange,
-}: {
-  currentPage: number;
-  pageCount: number;
-  handlePageChange: (selectedPage: number) => void;
-}): JSX.Element => {
+const Pagination = ({ currentPage, pageCount }: { currentPage: number; pageCount: number }): JSX.Element => {
   const className = 'mr-2 mb-2 px-4 py-3 text-sm border rounded transition-colors hover:border-sky-500';
   const links = [];
 
@@ -71,9 +64,9 @@ const Pagination = ({
     <div className='mb-4'>
       <div className='flex flex-wrap mt-8'>
         {currentPage > 1 && (
-          <button key='Previous' onClick={() => handlePageChange(currentPage - 1)} className={className}>
+          <Link key='Previous' href={`/jobs?page=${currentPage - 1}`} className={className}>
             {__('« Previous')}
-          </button>
+          </Link>
         )}
         {links.map((link) =>
           link.active ? (
@@ -86,16 +79,16 @@ const Pagination = ({
             </span>
           ) : (
             link.page && (
-              <button key={link.page} onClick={() => handlePageChange(link.page)} className={className}>
+              <Link key={link.page} href={`/jobs?page=${link.page}`} className={className}>
                 {__(String(link.page))}
-              </button>
+              </Link>
             )
           ),
         )}
         {currentPage < pageCount && (
-          <button key='Next' onClick={() => handlePageChange(currentPage + 1)} className={className}>
+          <Link key='Next' href={`/jobs?page=${currentPage + 1}`} className={className}>
             {__('Next »')}
-          </button>
+          </Link>
         )}
       </div>
     </div>
