@@ -17,3 +17,7 @@ export const nl2br = (str: string): (string | JSX.Element)[] => {
 export const dateToString = (date: Date): string => {
   return date.toISOString().replace(/T.*/, '');
 };
+
+export const serialize = (obj?: object | null) => {
+  return JSON.parse(JSON.stringify(obj));
+};

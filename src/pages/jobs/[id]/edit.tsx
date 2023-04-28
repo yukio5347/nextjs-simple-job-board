@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 
 import Form, { DataProps } from '@/components/Form';
 import Layout from '@/components/Layout';
-import { __ } from '@/lib/helpers';
+import { __, serialize } from '@/lib/helpers';
 import { prisma } from '@/lib/prisma';
 import JobPosting from '@/models/JobPosting';
 
@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }: { [key:
     },
   });
 
-  const jobPosting = param ? JSON.parse(JSON.stringify(new JobPosting(param))) : null;
+  const jobPosting = param ? serialize(new JobPosting(param)) : null;
 
   return {
     props: { jobPosting },

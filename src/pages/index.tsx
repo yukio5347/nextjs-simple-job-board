@@ -5,7 +5,7 @@ import { useState } from 'react';
 import JobPostingItem from '@/components/JobPostingItem';
 import Layout from '@/components/Layout';
 import Modal from '@/components/Modal';
-import { __ } from '@/lib/helpers';
+import { __, serialize } from '@/lib/helpers';
 import { prisma } from '@/lib/prisma';
 import { orderBy, where } from '@/lib/queries';
 import JobPosting from '@/models/JobPosting';
@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     orderBy,
     take: 20,
   });
-  const jobPostings = JSON.parse(JSON.stringify(params.map((param) => new JobPosting(param))));
+  const jobPostings = serialize(params.map((param) => new JobPosting(param)));
 
   return {
     props: { jobPostings },

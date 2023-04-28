@@ -8,7 +8,7 @@ import Layout from '@/components/Layout';
 import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import TextInput from '@/components/TextInput';
-import { __, dateToString } from '@/lib/helpers';
+import { __, dateToString, serialize } from '@/lib/helpers';
 import { prisma } from '@/lib/prisma';
 import JobPosting from '@/models/JobPosting';
 
@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }: { [id: 
     },
   });
 
-  const jobPosting = param ? JSON.parse(JSON.stringify(new JobPosting(param))) : null;
+  const jobPosting = param ? serialize(new JobPosting(param)) : null;
 
   return {
     props: { id, jobPosting },
