@@ -6,7 +6,7 @@ import Layout from '@/components/Layout';
 import Modal from '@/components/Modal';
 import { __ } from '@/lib/helpers';
 import { useJobList } from '@/lib/swr';
-import JobPosting from '@/models/JobPosting';
+import { JobPosting } from '@/models/JobPosting';
 
 const Home = () => {
   const [currentJob, setCurrentJob] = useState<JobPosting>();
@@ -46,7 +46,6 @@ const Home = () => {
         </div>
       ) : jobPostings ? (
         <>
-          {console.log(jobPostings[0])}
           <div className='grid gap-5 md:grid-cols-2'>
             {jobPostings.map((jobPosting: JobPosting) => (
               <JobPostingItem key={jobPosting.id} jobPosting={jobPosting} openModal={openModal} />
