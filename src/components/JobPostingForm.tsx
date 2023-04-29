@@ -1,5 +1,7 @@
+import pick from 'lodash.pick';
 import Head from 'next/head';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 import Button from '@/components/Button';
 import Checkbox from '@/components/Checkbox';
@@ -9,21 +11,23 @@ import InputLabel from '@/components/InputLabel';
 import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import TextInput from '@/components/TextInput';
-import { __, addDays, dateToString } from '@/lib/helpers';
+import { __, addDays, dateToString, getErrorMessage } from '@/lib/helpers';
 
-const initialData = {
+import { useAlertContext } from './Alert';
+
+const defaultData = {
   title: '',
   description: '',
-  closedAt: '',
-  employmentType: '',
+  closedAt: dateToString(addDays(new Date(), 30)),
+  employmentType: 'FULL_TIME',
   isRemote: false,
   address: '',
   locality: '',
   region: '',
   postalCode: '',
-  salaryMin: '',
+  salaryMin: '0',
   salaryMax: '',
-  salaryUnit: '',
+  salaryUnit: 'MONTH',
   companyName: '',
   companyDescription: '',
   name: '',
@@ -31,13 +35,16 @@ const initialData = {
   password: '',
 };
 
-type DataType = typeof initialData & {
+type DataType = typeof defaultData & {
   id?: number;
 };
 
-export default function Form({ jobPosting = initialData }: { jobPosting?: DataType }) {
+export default function Form({ jobPosting = defaultData }: { jobPosting?: DataType }) {
   const [formData, setFormData] = useState<DataType>(jobPosting);
   const [processing, setProcessing] = useState(false);
+  const router = useRouter();
+  const { showAlert } = useAlertContext();
+
   const today = new Date();
   const employmentTypes = {
     FULL_TIME: __('FULL_TIME'),
@@ -54,6 +61,42 @@ export default function Form({ jobPosting = initialData }: { jobPosting?: DataTy
     YEAR: __('YEAR'),
   };
 
+  const pickFormData = () => {
+    return pick(formData, Object.keys(defaultData));
+  };
+
+  const store = async (): Promise<void> => {
+    const data = pickFormData();
+    fetch('/api/jobs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (res.ok) {
+          router.push('/jobs');
+        }
+        return res.json();
+      })
+      .then((json) => showAlert(json.type, json.message))
+      .catch((error) => {
+        showAlert('error', getErrorMessage(error));
+        console.error(error);
+      });
+  };
+
+  const update = async () => {
+    const data = pickFormData();
+    const res = await fetch(`/api/jobs/${jobPosting.id}/update`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) {
+      router.push('/jobs');
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -62,14 +105,8 @@ export default function Form({ jobPosting = initialData }: { jobPosting?: DataTy
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setProcessing(true);
-    // onSubmit({ });
+    jobPosting.id ? update() : store();
   };
-
-  useEffect(() => {
-    if (!formData.closedAt) {
-      setFormData({ ...formData, ['closedAt']: dateToString(addDays(today, 30)) });
-    }
-  }, []);
 
   return (
     <>
