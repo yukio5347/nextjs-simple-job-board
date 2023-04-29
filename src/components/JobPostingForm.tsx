@@ -1,61 +1,44 @@
-import { useState } from 'react';
 import Head from 'next/head';
+import { useEffect, useState } from 'react';
+
+import Button from '@/components/Button';
 import Checkbox from '@/components/Checkbox';
+import { Spin } from '@/components/Icons';
 // import InputError from "@/components/InputError";
 import InputLabel from '@/components/InputLabel';
-import Button from '@/components/Button';
 import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import TextInput from '@/components/TextInput';
-import { __, dateToString } from '@/lib/helpers';
-import JobPosting from '@/models/JobPosting';
+import { __, addDays, dateToString } from '@/lib/helpers';
 
-export interface DataProps {
-  title: string;
-  description: string;
-  closedAt: string;
-  employmentType: string;
-  isRemote: boolean;
-  address: string;
-  locality: string;
-  region: string;
-  postalCode: string;
-  salaryMin: string;
-  salaryMax: string;
-  salaryUnit: string;
-  companyName: string;
-  companyDescription: string;
-  name: string;
-  email: string;
-  password: string;
-}
+const initialData = {
+  title: '',
+  description: '',
+  closedAt: '',
+  employmentType: '',
+  isRemote: false,
+  address: '',
+  locality: '',
+  region: '',
+  postalCode: '',
+  salaryMin: '',
+  salaryMax: '',
+  salaryUnit: '',
+  companyName: '',
+  companyDescription: '',
+  name: '',
+  email: '',
+  password: '',
+};
 
-interface Props {
-  jobPosting: JobPosting;
-  onSubmit: (data: DataProps) => void;
-}
+type DataType = typeof initialData & {
+  id?: number;
+};
 
-const Form = ({ jobPosting, onSubmit }: Props) => {
-  const [title, setTitle] = useState(jobPosting.title || '');
-  const [description, setDescription] = useState(jobPosting.description || '');
-  const [closedAt, setClosedAt] = useState(jobPosting.closedAt);
-  const [employmentType, setEmploymentType] = useState(jobPosting.employmentType);
-  const [isRemote, setIsRemote] = useState(jobPosting.isRemote);
-  const [address, setAddress] = useState(jobPosting.address || '');
-  const [locality, setLocality] = useState(jobPosting.locality || '');
-  const [region, setRegion] = useState(jobPosting.region || '');
-  const [postalCode, setPostalCode] = useState(jobPosting.postalCode || '');
-  const [salaryMin, setSalaryMin] = useState(jobPosting.salaryMin);
-  const [salaryMax, setSalaryMax] = useState(jobPosting.salaryMax || '');
-  const [salaryUnit, setSalaryUnit] = useState(jobPosting.salaryUnit);
-  const [companyName, setCompanyName] = useState(jobPosting.companyName || '');
-  const [companyDescription, setCompanyDescription] = useState(jobPosting.companyDescription || '');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function Form({ jobPosting = initialData }: { jobPosting?: DataType }) {
+  const [formData, setFormData] = useState<DataType>(jobPosting);
   const [processing, setProcessing] = useState(false);
   const today = new Date();
-
   const employmentTypes = {
     FULL_TIME: __('FULL_TIME'),
     PART_TIME: __('PART_TIME'),
@@ -71,29 +54,22 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
     YEAR: __('YEAR'),
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setProcessing(true);
-    onSubmit({
-      title,
-      description,
-      closedAt,
-      employmentType,
-      isRemote,
-      address,
-      locality,
-      region,
-      postalCode,
-      salaryMin,
-      salaryMax,
-      salaryUnit,
-      companyName,
-      companyDescription,
-      name,
-      email,
-      password,
-    });
+    // onSubmit({ });
   };
+
+  useEffect(() => {
+    if (!formData.closedAt) {
+      setFormData({ ...formData, ['closedAt']: dateToString(addDays(today, 30)) });
+    }
+  }, []);
 
   return (
     <>
@@ -105,14 +81,14 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
       <h1 className='mb-4 font-semibold'></h1>
       <form onSubmit={handleSubmit}>
         <div>
-          <InputLabel htmlFor='title' value={__('Job Title')} isRequired={true} />
+          <InputLabel htmlFor='title' label={__('Job Title')} isRequired={true} />
           <TextInput
             id='title'
             name='title'
-            value={title}
+            value={formData.title}
             className='mt-1 block w-full'
             isFocused={true}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+            onChange={handleChange}
             maxLength='40'
             required
           />
@@ -120,13 +96,13 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='description' value={__('Job Description')} isRequired={true} />
+          <InputLabel htmlFor='description' label={__('Job Description')} isRequired={true} />
           <Textarea
             id='description'
             name='description'
-            value={description}
+            value={formData.description}
             className='mt-1 block w-full'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDescription(e.target.value)}
+            onChange={handleChange}
             maxLength='20000'
             required
           />
@@ -134,30 +110,30 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='closedAt' value={__('Close Date')} isRequired={true} />
+          <InputLabel htmlFor='closedAt' label={__('Close Date')} isRequired={true} />
           <TextInput
             id='closedAt'
             name='closedAt'
-            value={closedAt}
+            value={formData.closedAt}
             className='mt-1 block w-full'
             type='date'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setClosedAt(e.target.value)}
+            onChange={handleChange}
             min={dateToString(today)}
-            max={dateToString(new Date(today.setDate(today.getDate() + 90)))}
+            max={dateToString(addDays(today, 90))}
             required
           />
           {/* <InputError message={errors.closedAt} className="mt-2" /> */}
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='employmentType' value={__('Employment Type')} isRequired={true} />
+          <InputLabel htmlFor='employmentType' label={__('Employment Type')} isRequired={true} />
           <Select
             id='employmentType'
             name='employmentType'
             options={employmentTypes}
-            value={employmentType}
+            value={formData.employmentType}
             className='mt-1 block w-full'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmploymentType(e.target.value)}
+            onChange={handleChange}
             required
           />
           {/* <InputError message={errors.employmentType} className="mt-2" /> */}
@@ -165,83 +141,80 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
 
         <h3 className='mt-10 font-semibold'>{__('Work Place')}</h3>
         <label className='mt-4 inline-flex items-center'>
-          <Checkbox
-            name='isRemote'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIsRemote(e.target.checked)}
-          />
+          <Checkbox name='isRemote' onChange={handleChange} />
           <span className='ml-2 text-sm font-medium'>{__('Remote')}</span>
         </label>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='address' value={__('Address')} isRequired={!isRemote} />
+          <InputLabel htmlFor='address' label={__('Address')} isRequired={!formData.isRemote} />
           <TextInput
             id='address'
             name='address'
-            value={address}
+            value={formData.address}
             className='mt-1 block w-full'
             autoComplete='street-address'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
+            onChange={handleChange}
             maxLength='255'
-            required={!isRemote}
+            required={!formData.isRemote}
           />
           {/* <InputError message={errors.address} className="mt-2" /> */}
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='locality' value={__('City')} isRequired={!isRemote} />
+          <InputLabel htmlFor='locality' label={__('City')} isRequired={!formData.isRemote} />
           <TextInput
             id='locality'
             name='locality'
-            value={locality}
+            value={formData.locality}
             className='mt-1 block w-full'
             autoComplete='address-level2'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLocality(e.target.value)}
+            onChange={handleChange}
             maxLength='255'
-            required={!isRemote}
+            required={!formData.isRemote}
           />
           {/* <InputError message={errors.locality} className="mt-2" /> */}
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='region' value={__('Region')} isRequired={!isRemote} />
+          <InputLabel htmlFor='region' label={__('Region')} isRequired={!formData.isRemote} />
           <TextInput
             id='region'
             name='region'
-            value={region}
+            value={formData.region}
             className='mt-1 block w-full'
             autoComplete='address-level1'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRegion(e.target.value)}
+            onChange={handleChange}
             maxLength='255'
-            required={!isRemote}
+            required={!formData.isRemote}
           />
           {/* <InputError message={errors.region} className="mt-2" /> */}
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='postalCode' value={__('Postal Code')} isRequired={!isRemote} />
+          <InputLabel htmlFor='postalCode' label={__('Postal Code')} isRequired={!formData.isRemote} />
           <TextInput
             id='postalCode'
             name='postalCode'
-            value={postalCode}
+            value={formData.postalCode}
             className='mt-1 block w-full'
             autoComplete='postal-code'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPostalCode(e.target.value)}
+            onChange={handleChange}
             maxLength='255'
-            required={!isRemote}
+            required={!formData.isRemote}
           />
           {/* <InputError message={errors.postalCode} className="mt-2" /> */}
         </div>
 
         <h3 className='mt-10 font-semibold'>{__('Salary')}</h3>
         <div className='mt-4'>
-          <InputLabel htmlFor='salaryMin' value={__('Min. Salary')} isRequired={true} />
+          <InputLabel htmlFor='salaryMin' label={__('Min. Salary')} isRequired={true} />
           <TextInput
             id='salaryMin'
             name='salaryMin'
-            value={salaryMin}
+            value={formData.salaryMin}
             type='number'
             className='mt-1 block w-full'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSalaryMin(e.target.value)}
+            onChange={handleChange}
             min='0'
             required
           />
@@ -249,28 +222,28 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='salaryMax' value={__('Max. Salary')} />
+          <InputLabel htmlFor='salaryMax' label={__('Max. Salary')} />
           <TextInput
             id='salaryMax'
             name='salaryMax'
-            value={salaryMax}
+            value={formData.salaryMax}
             type='number'
             className='mt-1 block w-full'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSalaryMax(e.target.value)}
-            min={salaryMin}
+            onChange={handleChange}
+            min={formData.salaryMin}
           />
           {/* <InputError message={errors.salaryMax} className="mt-2" /> */}
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='salaryUnit' value={__('Salary Unit')} isRequired={true} />
+          <InputLabel htmlFor='salaryUnit' label={__('Salary Unit')} isRequired={true} />
           <Select
             id='salaryUnit'
             name='salaryUnit'
             options={salaryUnits}
-            value={salaryUnit}
+            value={formData.salaryUnit}
             className='mt-1 block w-full'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSalaryUnit(e.target.value)}
+            onChange={handleChange}
             required
           />
           {/* <InputError message={errors.salaryUnit} className="mt-2" /> */}
@@ -278,14 +251,14 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
 
         <h3 className='mt-10 font-semibold'>{__('Company Information')}</h3>
         <div className='mt-4'>
-          <InputLabel htmlFor='companyName' value={__('Company Name')} isRequired={true} />
+          <InputLabel htmlFor='companyName' label={__('Company Name')} isRequired={true} />
           <TextInput
             id='companyName'
             name='companyName'
-            value={companyName}
+            value={formData.companyName}
             className='mt-1 block w-full'
             autoComplete='organization'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCompanyName(e.target.value)}
+            onChange={handleChange}
             maxLength='255'
             required
           />
@@ -293,13 +266,13 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='companyDescription' value={__('Company Description')} isRequired={true} />
+          <InputLabel htmlFor='companyDescription' label={__('Company Description')} isRequired={true} />
           <Textarea
             id='companyDescription'
             name='companyDescription'
-            value={companyDescription}
+            value={formData.companyDescription}
             className='mt-1 block w-full'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCompanyDescription(e.target.value)}
+            onChange={handleChange}
             maxLength='20000'
             required
           />
@@ -309,14 +282,14 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
         <h3 className='mt-10 font-semibold'>{__('Authentication Information')}</h3>
         {!jobPosting.id && (
           <div className='mt-4'>
-            <InputLabel htmlFor='name' value={__('Your Name')} isRequired={true} />
+            <InputLabel htmlFor='name' label={__('Your Name')} isRequired={true} />
             <TextInput
               id='name'
               name='name'
-              value={name}
+              value={formData.name}
               className='mt-1 block w-full'
               autoComplete='name'
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+              onChange={handleChange}
               maxLength='255'
               required
             />
@@ -325,15 +298,15 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
         )}
 
         <div className='mt-4'>
-          <InputLabel htmlFor='email' value={__('Email Address')} isRequired={true} />
+          <InputLabel htmlFor='email' label={__('Email Address')} isRequired={true} />
           <TextInput
             id='email'
             type='email'
             name='email'
-            value={email}
+            value={formData.email}
             className='mt-1 block w-full'
             autoComplete='email'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            onChange={handleChange}
             maxLength='255'
             required
           />
@@ -341,15 +314,15 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
         </div>
 
         <div className='mt-4'>
-          <InputLabel htmlFor='password' value={__('Password')} isRequired={true} />
+          <InputLabel htmlFor='password' label={__('Password')} isRequired={true} />
           <TextInput
             id='password'
             type='password'
             name='password'
-            value={password}
+            value={formData.password}
             className='mt-1 block w-full'
             autoComplete='current-password'
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            onChange={handleChange}
             maxLength='255'
             required
           />
@@ -357,29 +330,9 @@ const Form = ({ jobPosting, onSubmit }: Props) => {
         </div>
 
         <Button disabled={processing} className='mt-6'>
-          {processing ? (
-            <svg
-              className='animate-spin h-5 w-5 m-auto text-white'
-              xmlns='http://www.w3.org/2000/svg'
-              fill='none'
-              viewBox='0 0 24 24'
-            >
-              <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'></circle>
-              <path
-                className='opacity-75'
-                fill='currentColor'
-                d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-              ></path>
-            </svg>
-          ) : jobPosting.id ? (
-            __('Save')
-          ) : (
-            __('Post')
-          )}
+          {processing ? <Spin className='m-auto text-white' /> : jobPosting.id ? __('Save') : __('Post')}
         </Button>
       </form>
     </>
   );
-};
-
-export default Form;
+}

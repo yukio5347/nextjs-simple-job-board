@@ -7,8 +7,8 @@ export const useJobList = (page = 1) => {
 
   return {
     jobPostings: data,
-    isLoading,
     error,
+    isLoading,
   };
 };
 
@@ -18,5 +18,15 @@ export const usePageCount = () => {
 
   return {
     pageCount,
+  };
+};
+
+export const useJob = (id: number) => {
+  const { data, error, isLoading } = useSWR(id ? `/api/jobs/${id}` : null, fetcher);
+
+  return {
+    jobPosting: data,
+    error,
+    isLoading,
   };
 };
