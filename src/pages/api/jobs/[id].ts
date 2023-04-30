@@ -36,9 +36,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
         return res.status(403).json({
           type: 'error',
           message: 'Failed to authenticate. Confirm your email and password',
-          id,
-          email,
-          password,
         });
       }
     } catch (error) {
@@ -48,4 +45,36 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       });
     }
   }
+
+  if (req.method === 'DELETE') {
+    const { email, password } = req.body;
+    try {
+      if (await authenticate(id, email, password)) {
+        await prisma.jobPosting.update({
+          where,
+          data: {
+            deletedAt: new Date(),
+          },
+        });
+        return res.status(200).json({
+          type: 'success',
+          message: 'The job has been deleted.',
+        });
+      } else {
+        return res.status(403).json({
+          type: 'error',
+          message: 'Failed to authenticate. Confirm your email and password',
+        });
+      }
+    } catch (error) {
+      return res.status(500).json({
+        type: 'error',
+        message: getErrorMessage(error),
+      });
+    }
+  }
+
+  // apply
+  // if (req.method === 'POST') {
+  // }
 }

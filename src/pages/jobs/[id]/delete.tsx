@@ -1,69 +1,72 @@
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
+import { useAlertContext } from '@/components/Alert';
 import Button from '@/components/Button';
+import { Spin } from '@/components/Icons';
 import InputLabel from '@/components/InputLabel';
 import Layout from '@/components/Layout';
+import Loading from '@/components/Loading';
 import TextInput from '@/components/TextInput';
-import { __, serialize } from '@/lib/helpers';
-import { prisma } from '@/lib/prisma';
-import JobPosting from '@/models/JobPosting';
+import { __, getErrorMessage } from '@/lib/helpers';
+import { useJob } from '@/lib/swr';
 
-export const getServerSideProps: GetServerSideProps = async ({ params }: { [id: string]: any }) => {
-  const id = parseInt(params.id as string);
-  const param = await prisma.jobPosting.findFirst({
-    where: {
-      id: id,
-      closedAt: { gte: new Date() },
-      deletedAt: null,
-    },
-  });
-
-  const jobPosting = param ? serialize(new JobPosting(param)) : null;
-
-  return {
-    props: { id, jobPosting },
-  };
-};
-
-const Delete = ({ id, jobPosting }: { id: number; jobPosting?: JobPosting }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export default function Delete() {
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [processing, setProcessing] = useState(false);
-
   const router = useRouter();
+  const id = Number(router.query.id);
+  const { jobPosting, error, isLoading } = useJob(id);
+  const { showAlert } = useAlertContext();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setProcessing(true);
-    const res = await fetch(`/api/jobs/${id}/destroy`, {
+    fetch(`/api/jobs/${id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    if (res.ok) {
-      router.push('/jobs');
-    }
+      body: JSON.stringify(formData),
+    })
+      .then((res) => {
+        if (res.ok) {
+          router.push('/jobs');
+        }
+        return res.json();
+      })
+      .then((json) => showAlert(json.type, json.message))
+      .catch((error) => {
+        showAlert('error', getErrorMessage(error));
+        console.error(error);
+      })
+      .finally(() => setProcessing(false));
   };
 
   return (
     <Layout>
-      {jobPosting ? (
+      {error ? (
+        <>{error.message}</>
+      ) : isLoading ? (
+        <Loading />
+      ) : jobPosting ? (
         <>
-          <h1 className='mb-4 font-semibold'>Delete your job</h1>
+          <h1 className='mb-4 font-semibold'>{__(`You are about to delete "${jobPosting.title}"`)}</h1>
           <form onSubmit={handleSubmit}>
             <div className='mt-4'>
-              <InputLabel htmlFor='email' value={__('Email Address')} isRequired={true} />
+              <InputLabel htmlFor='email' label={__('Email Address')} isRequired={true} />
               <TextInput
                 id='email'
                 type='email'
                 name='email'
-                value={email}
+                value={formData.email}
                 className='mt-1 block w-full'
                 autoComplete='email'
                 isFocused={true}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+                onChange={handleChange}
                 maxLength='255'
                 required
               />
@@ -71,15 +74,15 @@ const Delete = ({ id, jobPosting }: { id: number; jobPosting?: JobPosting }) => 
             </div>
 
             <div className='mt-4'>
-              <InputLabel htmlFor='password' value={__('Password')} isRequired={true} />
+              <InputLabel htmlFor='password' label={__('Password')} isRequired={true} />
               <TextInput
                 id='password'
                 type='password'
                 name='password'
-                value={password}
+                value={formData.password}
                 className='mt-1 block w-full'
                 autoComplete='current-password'
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+                onChange={handleChange}
                 maxLength='255'
                 required
               />
@@ -87,31 +90,13 @@ const Delete = ({ id, jobPosting }: { id: number; jobPosting?: JobPosting }) => 
             </div>
 
             <Button disabled={processing} className='mt-6'>
-              {processing ? (
-                <svg
-                  className='animate-spin h-5 w-5 m-auto text-white'
-                  xmlns='http://www.w3.org/2000/svg'
-                  fill='none'
-                  viewBox='0 0 24 24'
-                >
-                  <circle className='opacity-25' cx='12' cy='12' r='10' stroke='currentColor' strokeWidth='4'></circle>
-                  <path
-                    className='opacity-75'
-                    fill='currentColor'
-                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
-                  ></path>
-                </svg>
-              ) : (
-                __('Delete')
-              )}
+              {processing ? <Spin className='m-auto text-white' /> : __('Delete')}
             </Button>
           </form>
         </>
       ) : (
-        <p>job not found.</p>
+        <p>{__('Job not found.')}</p>
       )}
     </Layout>
   );
-};
-
-export default Delete;
+}
