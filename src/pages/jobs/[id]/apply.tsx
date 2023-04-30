@@ -10,7 +10,7 @@ import Loading from '@/components/Loading';
 import Select from '@/components/Select';
 import Textarea from '@/components/Textarea';
 import TextInput from '@/components/TextInput';
-import { __, dateToString, getErrorMessage, serialize } from '@/lib/helpers';
+import { __, dateToString, getErrorMessage } from '@/lib/helpers';
 import { useJob } from '@/lib/swr';
 
 const defaultData = {
