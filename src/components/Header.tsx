@@ -1,7 +1,8 @@
 import Link from 'next/link';
+
 import { __ } from '@/lib/helpers';
 
-const Header = () => {
+export default function Header() {
   return (
     <header className='bg-sky-500 py-5'>
       <div className='flex flex-col md:container md:flex-row md:justify-between'>
@@ -28,6 +29,4 @@ const Header = () => {
       </div>
     </header>
   );
-};
-
-export default Header;
+}

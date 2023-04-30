@@ -1,48 +1,25 @@
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import JobPosting from '@/models/JobPosting';
-import Form, { DataProps } from '@/components/Form';
+
+import JobPostingForm from '@/components/JobPostingForm';
 import Layout from '@/components/Layout';
+import Loading from '@/components/Loading';
 import { __ } from '@/lib/helpers';
-import { PrismaClient } from '@prisma/client';
+import { useJob } from '@/lib/swr';
 
-const prisma = new PrismaClient();
-
-export const getServerSideProps: GetServerSideProps = async ({ params }: { [key: string]: any }) => {
-  const id = parseInt(params.id as string);
-  const param = await prisma.jobPosting.findFirst({
-    where: {
-      id: id,
-      closedAt: { gte: new Date() },
-      deletedAt: null,
-    },
-  });
-
-  const jobPosting = param ? JSON.parse(JSON.stringify(new JobPosting(param))) : null;
-
-  return {
-    props: { jobPosting },
-  };
-};
-
-const Edit = ({ jobPosting }: { jobPosting?: JobPosting }) => {
+export default function Edit() {
   const router = useRouter();
-  const id = parseInt(router.query.id as string);
-
-  const handleSubmit = async (data: DataProps) => {
-    const res = await fetch(`/api/jobs/${id}/update`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (res.ok) {
-      router.push('/jobs');
-    }
-  };
+  const id = Number(router.query.id);
+  const { jobPosting, error, isLoading } = useJob(id);
 
   return (
-    <Layout>{jobPosting ? <Form jobPosting={jobPosting} onSubmit={handleSubmit} /> : <p>job not found.</p>}</Layout>
+    <Layout>
+      {error ? (
+        <>{error.message}</>
+      ) : isLoading || !jobPosting ? (
+        <Loading />
+      ) : (
+        jobPosting && <JobPostingForm jobPosting={jobPosting} />
+      )}
+    </Layout>
   );
-};
-
-export default Edit;
+}

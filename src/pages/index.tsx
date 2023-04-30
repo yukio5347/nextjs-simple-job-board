@@ -1,31 +1,18 @@
-import { useState } from 'react';
-import { GetServerSideProps } from 'next';
 import Link from 'next/link';
-import { PrismaClient } from '@prisma/client';
-import Layout from '@/components/Layout';
+import { useState } from 'react';
+
 import JobPostingItem from '@/components/JobPostingItem';
+import Layout from '@/components/Layout';
+import Loading from '@/components/Loading';
 import Modal from '@/components/Modal';
-import JobPosting from '@/models/JobPosting';
-import { where, orderBy } from '@/lib/queries';
 import { __ } from '@/lib/helpers';
+import { useJobList } from '@/lib/swr';
+import { JobPosting } from '@/models/JobPosting';
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const prisma = new PrismaClient();
-  const params = await prisma.jobPosting.findMany({
-    where,
-    orderBy,
-    take: 20,
-  });
-  const jobPostings = JSON.parse(JSON.stringify(params.map((param) => new JobPosting(param))));
-
-  return {
-    props: { jobPostings },
-  };
-};
-
-const Home = ({ jobPostings }: { jobPostings: JobPosting[] }) => {
+export default function Home() {
   const [currentJob, setCurrentJob] = useState<JobPosting>();
   const [isOpen, setIsOpen] = useState(false);
+  const { jobPostings, error, isLoading } = useJobList();
 
   const openModal = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, jobPosting: JobPosting): void => {
     e.preventDefault();
@@ -39,7 +26,11 @@ const Home = ({ jobPostings }: { jobPostings: JobPosting[] }) => {
 
   return (
     <Layout>
-      {jobPostings ? (
+      {error ? (
+        <>{error.message}</>
+      ) : isLoading ? (
+        <Loading />
+      ) : jobPostings ? (
         <>
           <div className='grid gap-5 md:grid-cols-2'>
             {jobPostings.map((jobPosting: JobPosting) => (
@@ -61,6 +52,4 @@ const Home = ({ jobPostings }: { jobPostings: JobPosting[] }) => {
       )}
     </Layout>
   );
-};
-
-export default Home;
+}

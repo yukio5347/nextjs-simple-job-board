@@ -1,7 +1,6 @@
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 const authenticate = async (id: number, email: string, password: string): Promise<boolean> => {
   const correctPassword = (plainText: string, hashedText: string): boolean => {

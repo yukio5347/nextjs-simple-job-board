@@ -1,22 +1,20 @@
-const InputLabel = ({
-  value = '',
+export default function InputLabel({
+  label = '',
   className = '',
   children,
   isRequired = false,
   ...props
 }: {
-  value?: string;
+  label?: string;
   className?: string;
   isRequired?: boolean;
   children?: React.ReactNode;
-  [key: string]: any;
-}) => {
+  [key: string]: unknown;
+}) {
   className += isRequired ? ' after:content-["_*"] after:text-red-600' : '';
   return (
     <label {...props} className={`block text-sm font-medium ${className}`}>
-      {value ? value : children}
+      {label ? label : children}
     </label>
   );
-};
-
-export default InputLabel;
+}

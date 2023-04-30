@@ -1,9 +1,10 @@
-import { Fragment } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import Link from 'next/link';
+import { Fragment } from 'react';
+
 import { Close, Map, Money } from '@/components/Icons';
-import JobPosting from '@/models/JobPosting';
 import { __, nl2br } from '@/lib/helpers';
+import { JobPosting } from '@/models/JobPosting';
 
 export default function Modal({
   jobPosting,

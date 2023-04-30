@@ -30,7 +30,7 @@ model JobApplication {
   email        String
   telephone    String?
   address      String?
-  birthday     DateTime?
+  birthday     DateTime? @db.Date
   gender       String?
   summary      String?   @db.Text
   education    String?   @db.Text
