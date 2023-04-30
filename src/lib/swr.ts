@@ -1,6 +1,17 @@
 import useSWR from 'swr';
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  const json = await res.json();
+
+  if (!res.ok) {
+    const error = new Error();
+    error.message = json.message;
+    throw error;
+  }
+
+  return json;
+};
 
 export const useJobList = (page = 1) => {
   const { data, error, isLoading } = useSWR(`/api/jobs?page=${page}`, fetcher);
@@ -22,7 +33,12 @@ export const usePageCount = () => {
 };
 
 export const useJob = (id: number) => {
-  const { data, error, isLoading } = useSWR(id ? `/api/jobs/${id}` : null, fetcher);
+  const { data, error, isLoading } = useSWR(id ? `/api/jobs/${id}` : null, fetcher, {
+    onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+      if (error) return;
+      if (retryCount >= 10) return;
+    },
+  });
 
   return {
     jobPosting: data,

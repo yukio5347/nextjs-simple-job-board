@@ -71,156 +71,158 @@ export default function Apply() {
     <Layout>
       {error ? (
         <>{error.message}</>
-      ) : isLoading ? (
+      ) : isLoading || !jobPosting ? (
         <Loading />
-      ) : jobPosting ? (
-        <>
-          <h1 className='mb-4 font-semibold'>{`You are about to apply for "${jobPosting.title}"`}</h1>
-          <form onSubmit={handleSubmit}>
-            <div className='mt-4'>
-              <InputLabel htmlFor='name' label={__('Your Name')} isRequired={true} />
-              <TextInput
-                id='name'
-                name='name'
-                value={formData.name}
-                autoComplete='name'
-                isFocused={true}
-                onChange={handleChange}
-                maxLength='255'
-                required
-              />
-              {/* <InputError message={errors.name} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='email' label={__('Email Address')} isRequired={true} />
-              <TextInput
-                id='email'
-                type='email'
-                name='email'
-                value={formData.email}
-                autoComplete='email'
-                onChange={handleChange}
-                maxLength='255'
-                required
-              />
-              {/* <InputError message={errors.email} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='telephone' label={__('Telephone')} />
-              <TextInput
-                id='telephone'
-                name='telephone'
-                value={formData.telephone}
-                autoComplete='telephone'
-                onChange={handleChange}
-                maxLength='255'
-              />
-              {/* <InputError message={errors.telephone} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='address' label={__('Address')} />
-              <TextInput
-                id='address'
-                name='address'
-                value={formData.address}
-                autoComplete='address'
-                onChange={handleChange}
-                maxLength='255'
-              />
-              {/* <InputError message={errors.address} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='birthday' label={__('Birthday')} />
-              <TextInput
-                id='birthday'
-                name='birthday'
-                value={formData.birthday}
-                type='date'
-                onChange={handleChange}
-                max={dateToString(new Date())}
-              />
-              {/* <InputError message={errors.birthday} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='gender' label={__('Gender')} />
-              <Select
-                id='gender'
-                name='gender'
-                options={genders}
-                value={formData.gender}
-                onChange={handleChange}
-                maxLength='255'
-              />
-              {/* <InputError message={errors.gender} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='summary' label={__('Summary')} isRequired={true} />
-              <Textarea
-                id='summary'
-                name='summary'
-                value={formData.summary}
-                onChange={handleChange}
-                maxLength='20000'
-                required
-              />
-              {/* <InputError message={errors.summary} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='education' label={__('Education')} />
-              <Textarea
-                id='education'
-                name='education'
-                value={formData.education}
-                onChange={handleChange}
-                maxLength='20000'
-              />
-              {/* <InputError message={errors.education} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='workHistory' label={__('Work History')} />
-              <Textarea
-                id='workHistory'
-                name='workHistory'
-                value={formData.workHistory}
-                onChange={handleChange}
-                maxLength='20000'
-              />
-              {/* <InputError message={errors.workHistory} className="mt-2" /> */}
-            </div>
-
-            <div className='mt-4'>
-              <InputLabel htmlFor='certificates' label={__('Skills and Certificates')} />
-              <Textarea
-                id='certificates'
-                name='certificates'
-                value={formData.certificates}
-                onChange={handleChange}
-                maxLength='20000'
-              />
-              {/* <InputError message={errors.certificates} className="mt-2" /> */}
-            </div>
-            <div className='mt-6 flex justify-between'>
-              <Button disabled={processing}>{processing ? <Spin className='m-auto text-white' /> : __('Apply')}</Button>
-              <button
-                type='button'
-                className='py-2 px-5 text-sm rounded-md bg-gray-200  transition-colors hover:bg-gray-300'
-                onClick={() => router.back()}
-              >
-                {__('Cancel')}
-              </button>
-            </div>
-          </form>
-        </>
       ) : (
-        <p>{__('Job not found.')}</p>
+        jobPosting && (
+          <>
+            <h1 className='mb-4 font-semibold'>{`You are about to apply for "${jobPosting.title}"`}</h1>
+            <form onSubmit={handleSubmit}>
+              <div className='mt-4'>
+                <InputLabel htmlFor='name' label={__('Your Name')} isRequired={true} />
+                <TextInput
+                  id='name'
+                  name='name'
+                  value={formData.name}
+                  autoComplete='name'
+                  isFocused={true}
+                  onChange={handleChange}
+                  maxLength='255'
+                  required
+                />
+                {/* <InputError message={errors.name} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='email' label={__('Email Address')} isRequired={true} />
+                <TextInput
+                  id='email'
+                  type='email'
+                  name='email'
+                  value={formData.email}
+                  autoComplete='email'
+                  onChange={handleChange}
+                  maxLength='255'
+                  required
+                />
+                {/* <InputError message={errors.email} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='telephone' label={__('Telephone')} />
+                <TextInput
+                  id='telephone'
+                  name='telephone'
+                  value={formData.telephone}
+                  autoComplete='telephone'
+                  onChange={handleChange}
+                  maxLength='255'
+                />
+                {/* <InputError message={errors.telephone} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='address' label={__('Address')} />
+                <TextInput
+                  id='address'
+                  name='address'
+                  value={formData.address}
+                  autoComplete='address'
+                  onChange={handleChange}
+                  maxLength='255'
+                />
+                {/* <InputError message={errors.address} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='birthday' label={__('Birthday')} />
+                <TextInput
+                  id='birthday'
+                  name='birthday'
+                  value={formData.birthday}
+                  type='date'
+                  onChange={handleChange}
+                  max={dateToString(new Date())}
+                />
+                {/* <InputError message={errors.birthday} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='gender' label={__('Gender')} />
+                <Select
+                  id='gender'
+                  name='gender'
+                  options={genders}
+                  value={formData.gender}
+                  onChange={handleChange}
+                  maxLength='255'
+                />
+                {/* <InputError message={errors.gender} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='summary' label={__('Summary')} isRequired={true} />
+                <Textarea
+                  id='summary'
+                  name='summary'
+                  value={formData.summary}
+                  onChange={handleChange}
+                  maxLength='20000'
+                  required
+                />
+                {/* <InputError message={errors.summary} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='education' label={__('Education')} />
+                <Textarea
+                  id='education'
+                  name='education'
+                  value={formData.education}
+                  onChange={handleChange}
+                  maxLength='20000'
+                />
+                {/* <InputError message={errors.education} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='workHistory' label={__('Work History')} />
+                <Textarea
+                  id='workHistory'
+                  name='workHistory'
+                  value={formData.workHistory}
+                  onChange={handleChange}
+                  maxLength='20000'
+                />
+                {/* <InputError message={errors.workHistory} className="mt-2" /> */}
+              </div>
+
+              <div className='mt-4'>
+                <InputLabel htmlFor='certificates' label={__('Skills and Certificates')} />
+                <Textarea
+                  id='certificates'
+                  name='certificates'
+                  value={formData.certificates}
+                  onChange={handleChange}
+                  maxLength='20000'
+                />
+                {/* <InputError message={errors.certificates} className="mt-2" /> */}
+              </div>
+              <div className='mt-6 flex justify-between'>
+                <Button disabled={processing}>
+                  {processing ? <Spin className='m-auto text-white' /> : __('Apply')}
+                </Button>
+                <button
+                  type='button'
+                  className='py-2 px-5 text-sm rounded-md bg-gray-200  transition-colors hover:bg-gray-300'
+                  onClick={() => router.back()}
+                >
+                  {__('Cancel')}
+                </button>
+              </div>
+            </form>
+          </>
+        )
       )}
     </Layout>
   );

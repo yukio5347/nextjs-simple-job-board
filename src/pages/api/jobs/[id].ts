@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import requestIp from 'request-ip';
 
 import authenticate from '@/lib/authenticate';
-import { dateToString, getErrorMessage } from '@/lib/helpers';
+import { __, getErrorMessage } from '@/lib/helpers';
 import { prisma } from '@/lib/prisma';
 import { formatJobPosting, getData } from '@/models/JobPosting';
 
@@ -19,10 +19,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     const jobPosting = data ? formatJobPosting(data) : null;
 
     if (jobPosting) {
-      return res.status(200).json(jobPosting);
+      res.status(200).json(jobPosting);
     }
 
-    return res.status(404).json({ error: 'Job not found' });
+    res.status(404).json({ message: __('The job not found.') });
   }
 
   if (req.method === 'PUT') {
@@ -33,18 +33,18 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
           where,
           data: getData(req),
         });
-        return res.status(200).json({
+        res.status(200).json({
           type: 'success',
-          message: 'The job has been updated.',
+          message: __('Your job has been successfully updated!'),
         });
       } else {
-        return res.status(403).json({
+        res.status(403).json({
           type: 'error',
-          message: 'Failed to authenticate. Confirm your email and password',
+          message: __('Failed to authenticate. Confirm your email and password'),
         });
       }
     } catch (error) {
-      return res.status(500).json({
+      res.status(500).json({
         type: 'error',
         message: getErrorMessage(error),
       });
@@ -61,18 +61,18 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             deletedAt: new Date(),
           },
         });
-        return res.status(200).json({
+        res.status(200).json({
           type: 'success',
-          message: 'The job has been deleted.',
+          message: __('Your job has been deleted.'),
         });
       } else {
-        return res.status(403).json({
+        res.status(403).json({
           type: 'error',
           message: 'Failed to authenticate. Confirm your email and password',
         });
       }
     } catch (error) {
-      return res.status(500).json({
+      res.status(500).json({
         type: 'error',
         message: getErrorMessage(error),
       });
@@ -91,9 +91,9 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       });
 
       if (jobApplication) {
-        return res.status(403).json({
+        res.status(403).json({
           type: 'error',
-          message: `You already applied for this job on ${dateToString(jobApplication.createdAt)}.`,
+          message: __('You have already applied for this job.'),
         });
       }
 
@@ -116,12 +116,12 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
           },
         },
       });
-      return res.status(200).json({
+      res.status(200).json({
         type: 'success',
-        message: 'Your application has been sent to the company.',
+        message: __('Your application has been submitted'),
       });
     } catch (error) {
-      return res.status(500).json({
+      res.status(500).json({
         type: 'error',
         message: getErrorMessage(error),
       });

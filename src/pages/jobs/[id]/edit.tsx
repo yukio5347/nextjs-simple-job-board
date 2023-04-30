@@ -15,12 +15,10 @@ export default function Edit() {
     <Layout>
       {error ? (
         <>{error.message}</>
-      ) : isLoading ? (
+      ) : isLoading || !jobPosting ? (
         <Loading />
-      ) : jobPosting ? (
-        <JobPostingForm jobPosting={jobPosting} />
       ) : (
-        <p>{__('Job not found.')}</p>
+        jobPosting && <JobPostingForm jobPosting={jobPosting} />
       )}
     </Layout>
   );
