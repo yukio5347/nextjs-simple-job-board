@@ -19,10 +19,10 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
     const jobPosting = data ? formatJobPosting(data) : null;
 
     if (jobPosting) {
-      res.status(200).json(jobPosting);
+      return res.status(200).json(jobPosting);
     }
 
-    res.status(404).json({ message: __('The job not found.') });
+    return res.status(404).json({ message: __('The job not found.') });
   }
 
   if (req.method === 'PUT') {
@@ -33,18 +33,18 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
           where,
           data: getData(req),
         });
-        res.status(200).json({
+        return res.status(200).json({
           type: 'success',
           message: __('Your job has been successfully updated!'),
         });
       } else {
-        res.status(403).json({
+        return res.status(403).json({
           type: 'error',
           message: __('Failed to authenticate. Confirm your email and password'),
         });
       }
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         type: 'error',
         message: getErrorMessage(error),
       });
@@ -61,18 +61,18 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
             deletedAt: new Date(),
           },
         });
-        res.status(200).json({
+        return res.status(200).json({
           type: 'success',
           message: __('Your job has been deleted.'),
         });
       } else {
-        res.status(403).json({
+        return res.status(403).json({
           type: 'error',
           message: 'Failed to authenticate. Confirm your email and password',
         });
       }
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         type: 'error',
         message: getErrorMessage(error),
       });
@@ -91,7 +91,7 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
       });
 
       if (jobApplication) {
-        res.status(403).json({
+        return res.status(403).json({
           type: 'error',
           message: __('You have already applied for this job.'),
         });
@@ -116,12 +116,12 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
           },
         },
       });
-      res.status(200).json({
+      return res.status(200).json({
         type: 'success',
         message: __('Your application has been submitted'),
       });
     } catch (error) {
-      res.status(500).json({
+      return res.status(500).json({
         type: 'error',
         message: getErrorMessage(error),
       });
