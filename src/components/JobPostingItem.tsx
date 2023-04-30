@@ -1,18 +1,19 @@
-import JobPosting from '@/models/JobPosting';
 import Link from 'next/link';
-import { Map, Money } from '@/components/Icons';
 
-const JobPostingItem = ({
+import { Map, Money } from '@/components/Icons';
+import { JobPosting } from '@/models/JobPosting';
+
+export default function JobPostingItem({
   jobPosting,
   openModal,
 }: {
   jobPosting: JobPosting;
   openModal?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, jobPosting: JobPosting) => void;
-}) => {
+}) {
   return (
     <Link
       href={`/jobs/${jobPosting.id}`}
-      onClick={openModal ? (e) => openModal(e, jobPosting) : () => {}}
+      onClick={openModal && ((e) => openModal(e, jobPosting))}
       className='flex flex-col justify-between p-4 border rounded-lg transition-colors lg:hover:border-sky-500'
     >
       <div className='flex-1'>
@@ -37,6 +38,4 @@ const JobPostingItem = ({
       </div>
     </Link>
   );
-};
-
-export default JobPostingItem;
+}

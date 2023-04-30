@@ -83,7 +83,6 @@ export default function Apply() {
                 id='name'
                 name='name'
                 value={formData.name}
-                className='mt-1 block w-full'
                 autoComplete='name'
                 isFocused={true}
                 onChange={handleChange}
@@ -100,7 +99,6 @@ export default function Apply() {
                 type='email'
                 name='email'
                 value={formData.email}
-                className='mt-1 block w-full'
                 autoComplete='email'
                 onChange={handleChange}
                 maxLength='255'
@@ -115,7 +113,6 @@ export default function Apply() {
                 id='telephone'
                 name='telephone'
                 value={formData.telephone}
-                className='mt-1 block w-full'
                 autoComplete='telephone'
                 onChange={handleChange}
                 maxLength='255'
@@ -129,7 +126,6 @@ export default function Apply() {
                 id='address'
                 name='address'
                 value={formData.address}
-                className='mt-1 block w-full'
                 autoComplete='address'
                 onChange={handleChange}
                 maxLength='255'
@@ -143,7 +139,6 @@ export default function Apply() {
                 id='birthday'
                 name='birthday'
                 value={formData.birthday}
-                className='mt-1 block w-full'
                 type='date'
                 onChange={handleChange}
                 max={dateToString(new Date())}
@@ -158,7 +153,6 @@ export default function Apply() {
                 name='gender'
                 options={genders}
                 value={formData.gender}
-                className='mt-1 block w-full'
                 onChange={handleChange}
                 maxLength='255'
               />
@@ -171,7 +165,6 @@ export default function Apply() {
                 id='summary'
                 name='summary'
                 value={formData.summary}
-                className='mt-1 block w-full'
                 onChange={handleChange}
                 maxLength='20000'
                 required
@@ -185,7 +178,6 @@ export default function Apply() {
                 id='education'
                 name='education'
                 value={formData.education}
-                className='mt-1 block w-full'
                 onChange={handleChange}
                 maxLength='20000'
               />
@@ -198,7 +190,6 @@ export default function Apply() {
                 id='workHistory'
                 name='workHistory'
                 value={formData.workHistory}
-                className='mt-1 block w-full'
                 onChange={handleChange}
                 maxLength='20000'
               />
@@ -211,7 +202,6 @@ export default function Apply() {
                 id='certificates'
                 name='certificates'
                 value={formData.certificates}
-                className='mt-1 block w-full'
                 onChange={handleChange}
                 maxLength='20000'
               />

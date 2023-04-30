@@ -1,4 +1,4 @@
-const PrimaryButton = ({
+export default function PrimaryButton({
   className = '',
   disabled,
   children,
@@ -7,7 +7,7 @@ const PrimaryButton = ({
   className?: string;
   disabled: boolean;
   children?: React.ReactNode;
-}) => {
+}) {
   return (
     <button
       {...props}
@@ -21,6 +21,4 @@ const PrimaryButton = ({
       {children}
     </button>
   );
-};
-
-export default PrimaryButton;
+}

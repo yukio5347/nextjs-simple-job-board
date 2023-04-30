@@ -1,11 +1,9 @@
-const Checkbox = ({ className = '', ...props }: { className?: string; [key: string]: any }) => {
+export default function Checkbox(props: { [key: string]: unknown }) {
   return (
     <input
-      {...props}
       type='checkbox'
-      className={`border-gray-300 rounded shadow-sm focus:border-sky-500 focus:ring-sky-500 ${className}`}
+      className='border-gray-300 rounded shadow-sm focus:border-sky-500 focus:ring-sky-500'
+      {...props}
     />
   );
-};
-
-export default Checkbox;
+}

@@ -1,8 +1,9 @@
 import Head from 'next/head';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Head>
@@ -16,6 +17,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <Footer />
     </>
   );
-};
-
-export default Layout;
+}

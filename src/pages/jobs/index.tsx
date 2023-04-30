@@ -10,7 +10,7 @@ import { __ } from '@/lib/helpers';
 import { useJobList, usePageCount } from '@/lib/swr';
 import { JobPosting } from '@/models/JobPosting';
 
-const Index = () => {
+export default function Index() {
   const [currentJob, setCurrentJob] = useState<JobPosting>();
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -51,6 +51,4 @@ const Index = () => {
       )}
     </Layout>
   );
-};
-
-export default Index;
+}

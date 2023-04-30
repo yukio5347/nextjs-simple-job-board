@@ -2,7 +2,13 @@ import Link from 'next/link';
 
 import { __ } from '@/lib/helpers';
 
-const Pagination = ({ currentPage, pageCount }: { currentPage: number; pageCount: number }): JSX.Element => {
+export default function Pagination({
+  currentPage,
+  pageCount,
+}: {
+  currentPage: number;
+  pageCount: number;
+}): JSX.Element {
   const className = 'mr-2 mb-2 px-4 py-3 text-sm border rounded transition-colors hover:border-sky-500';
   const links = [];
 
@@ -93,6 +99,4 @@ const Pagination = ({ currentPage, pageCount }: { currentPage: number; pageCount
       </div>
     </div>
   );
-};
-
-export default Pagination;
+}

@@ -63,7 +63,6 @@ export default function Delete() {
                 type='email'
                 name='email'
                 value={formData.email}
-                className='mt-1 block w-full'
                 autoComplete='email'
                 isFocused={true}
                 onChange={handleChange}
@@ -80,7 +79,6 @@ export default function Delete() {
                 type='password'
                 name='password'
                 value={formData.password}
-                className='mt-1 block w-full'
                 autoComplete='current-password'
                 onChange={handleChange}
                 maxLength='255'

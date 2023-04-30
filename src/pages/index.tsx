@@ -9,7 +9,7 @@ import { __ } from '@/lib/helpers';
 import { useJobList } from '@/lib/swr';
 import { JobPosting } from '@/models/JobPosting';
 
-const Home = () => {
+export default function Home() {
   const [currentJob, setCurrentJob] = useState<JobPosting>();
   const [isOpen, setIsOpen] = useState(false);
   const { jobPostings, error, isLoading } = useJobList();
@@ -52,6 +52,4 @@ const Home = () => {
       )}
     </Layout>
   );
-};
-
-export default Home;
+}
