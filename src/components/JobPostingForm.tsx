@@ -40,7 +40,7 @@ type DataType = typeof defaultData & {
 };
 
 export default function Form({ jobPosting = defaultData }: { jobPosting?: DataType }) {
-  const [formData, setFormData] = useState<DataType>(jobPosting);
+  const [formData, setFormData] = useState<DataType>({ ...defaultData, ...jobPosting });
   const [processing, setProcessing] = useState(false);
   const router = useRouter();
   const { showAlert } = useAlertContext();
@@ -61,14 +61,21 @@ export default function Form({ jobPosting = defaultData }: { jobPosting?: DataTy
     YEAR: __('YEAR'),
   };
 
-  const pickFormData = () => {
-    return pick(formData, Object.keys(defaultData));
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const store = async (): Promise<void> => {
-    const data = pickFormData();
-    fetch('/api/jobs', {
-      method: 'POST',
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setProcessing(true);
+    jobPosting.id ? submit(`/api/jobs/${jobPosting.id}`, 'PUT') : submit('/api/jobs', 'POST');
+  };
+
+  const submit = async (url: string, method: 'POST' | 'PUT') => {
+    const data = pick(formData, Object.keys(defaultData));
+    fetch(url, {
+      method: method,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     })
@@ -82,30 +89,8 @@ export default function Form({ jobPosting = defaultData }: { jobPosting?: DataTy
       .catch((error) => {
         showAlert('error', getErrorMessage(error));
         console.error(error);
-      });
-  };
-
-  const update = async () => {
-    const data = pickFormData();
-    const res = await fetch(`/api/jobs/${jobPosting.id}/update`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (res.ok) {
-      router.push('/jobs');
-    }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setProcessing(true);
-    jobPosting.id ? update() : store();
+      })
+      .finally(() => setProcessing(false));
   };
 
   return (
@@ -178,7 +163,7 @@ export default function Form({ jobPosting = defaultData }: { jobPosting?: DataTy
 
         <h3 className='mt-10 font-semibold'>{__('Work Place')}</h3>
         <label className='mt-4 inline-flex items-center'>
-          <Checkbox name='isRemote' onChange={handleChange} />
+          <Checkbox name='isRemote' value={formData.isRemote} onChange={handleChange} />
           <span className='ml-2 text-sm font-medium'>{__('Remote')}</span>
         </label>
 
@@ -187,7 +172,7 @@ export default function Form({ jobPosting = defaultData }: { jobPosting?: DataTy
           <TextInput
             id='address'
             name='address'
-            value={formData.address}
+            value={formData.address ?? ''}
             className='mt-1 block w-full'
             autoComplete='street-address'
             onChange={handleChange}
@@ -202,7 +187,7 @@ export default function Form({ jobPosting = defaultData }: { jobPosting?: DataTy
           <TextInput
             id='locality'
             name='locality'
-            value={formData.locality}
+            value={formData.locality ?? ''}
             className='mt-1 block w-full'
             autoComplete='address-level2'
             onChange={handleChange}
@@ -217,7 +202,7 @@ export default function Form({ jobPosting = defaultData }: { jobPosting?: DataTy
           <TextInput
             id='region'
             name='region'
-            value={formData.region}
+            value={formData.region ?? ''}
             className='mt-1 block w-full'
             autoComplete='address-level1'
             onChange={handleChange}
@@ -232,7 +217,7 @@ export default function Form({ jobPosting = defaultData }: { jobPosting?: DataTy
           <TextInput
             id='postalCode'
             name='postalCode'
-            value={formData.postalCode}
+            value={formData.postalCode ?? ''}
             className='mt-1 block w-full'
             autoComplete='postal-code'
             onChange={handleChange}
@@ -263,7 +248,7 @@ export default function Form({ jobPosting = defaultData }: { jobPosting?: DataTy
           <TextInput
             id='salaryMax'
             name='salaryMax'
-            value={formData.salaryMax}
+            value={formData.salaryMax ?? ''}
             type='number'
             className='mt-1 block w-full'
             onChange={handleChange}

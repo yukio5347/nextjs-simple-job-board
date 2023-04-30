@@ -1,7 +1,10 @@
-import { JobPosting as JobPostingType } from '@prisma/client';
+import { JobPosting as JobPostingType, Prisma } from '@prisma/client';
+import bcrypt from 'bcrypt';
 import pick from 'lodash.pick';
+import { NextApiRequest } from 'next';
+import requestIp from 'request-ip';
 
-import { __ } from '@/lib/helpers';
+import { __, dateToString } from '@/lib/helpers';
 
 const filter = [
   'id',
@@ -114,8 +117,8 @@ export const formatJobPosting = (jobPosting: JobPostingType): JobPosting => {
   };
 
   const filtered = pick(jobPosting, filter);
-  const closedAt = jobPosting.closedAt.toISOString().replace(/T.*/, '');
-  const createdAt = jobPosting.createdAt.toISOString().replace(/T.*/, '');
+  const closedAt = dateToString(jobPosting.closedAt);
+  const createdAt = dateToString(jobPosting.createdAt);
   const employmentTypeText = __(jobPosting.employmentType);
   const employmentTypeColor = getEmploymentTypeColor();
   const salaryUnitText = __(jobPosting.salaryUnit);
@@ -135,5 +138,35 @@ export const formatJobPosting = (jobPosting: JobPostingType): JobPosting => {
     workPlace,
     shortSalary,
     salary,
+  };
+};
+
+export const getData = (req: NextApiRequest) => {
+  return {
+    title: req.body.title,
+    description: req.body.description,
+    employmentType: req.body.employmentType,
+    salaryMin: req.body.salaryMin,
+    salaryUnit: req.body.salaryUnit,
+    companyName: req.body.companyName,
+    companyDescription: req.body.companyDescription,
+    closedAt: new Date(req.body.closedAt),
+    isRemote: req.body.isRemote ? true : false,
+    address: req.body.address || null,
+    locality: req.body.locality || null,
+    region: req.body.region || null,
+    postalCode: req.body.postalCode || null,
+    salaryMax: req.body.salaryMax || null,
+  };
+};
+
+export const getStoreData = (req: NextApiRequest): Prisma.JobPostingCreateInput => {
+  return {
+    ...getData(req),
+    name: req.body.name,
+    email: req.body.email,
+    password: bcrypt.hashSync(req.body.password, 10),
+    ipAddress: requestIp.getClientIp(req),
+    userAgent: req.headers['user-agent'],
   };
 };
